@@ -13,15 +13,7 @@ from posts.models import Post, Group
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-
-    def get_permissions(self):
-        if self.action in [
-            'update',
-            'partial_update',
-            'destroy'
-        ]:
-            return (AuthorOrReadOnly(),)
-        return super().get_permissions()
+    permission_classes = (AuthorOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -34,15 +26,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-
-    def get_permissions(self):
-        if self.action in [
-            'update',
-            'partial_update',
-            'destroy'
-        ]:
-            return (AuthorOrReadOnly(),)
-        return super().get_permissions()
+    permission_classes = (AuthorOrReadOnly,)
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
